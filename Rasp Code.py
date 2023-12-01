@@ -71,6 +71,7 @@ if __name__ == "__main__":
         # Below provides a huge amount of controll. the 0.45 number is the threshold number, the 0.2 number is the nms number)
         # result, objectInfo = getObjects(img,0.45,0.2)
         # 2 -> This is for specified objects
+       
         result, objectInfo = getObjects(img, 0.45, 0.2,True,specified_objects)
         #print(objectInfo)
         if(objectInfo):

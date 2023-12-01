@@ -2,7 +2,7 @@
 import cv2
 import time
 import threading
-
+import numpy as np
 # This is to pull the information about what each object is called
 classNames = []
 classFile = "C:/Users/hicha/Downloads/Object_Detection_Files/coco.names"
@@ -50,6 +50,31 @@ def countdown_timer(seconds,object):
     print("Time's up!")
     print(object + " crossed the road!")
 
+# Function to detect green and red colors
+def detect_colors(img, draw=True):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+    # Define the range for green color
+    lower_green = np.array([40, 40, 40])
+    upper_green = np.array([80, 255, 255])
+
+    # Define the range for red color (considering hue values for red can wrap around)
+    lower_red = np.array([0, 100, 100])
+    upper_red = np.array([10, 255, 255])
+
+    mask_green = cv2.inRange(hsv, lower_green, upper_green)
+    mask_red = cv2.inRange(hsv, lower_red, upper_red)
+
+    if draw:
+        # Draw green regions
+        green_contours, _ = cv2.findContours(mask_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(img, green_contours, -1, (0, 255, 0), 2)
+
+        # Draw red regions
+        red_contours, _ = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(img, red_contours, -1, (0, 0, 255), 2)
+
+    return img
 
 # Below determines the size of the live feed window that will be displayed on the Raspberry Pi OS
 if __name__ == "__main__":
@@ -88,6 +113,9 @@ if __name__ == "__main__":
                 timer_thread.start()
 
                 Car_Crossed_The_Road = 1
+
+        # Add color detection
+        img = detect_colors(img, True)
 
         cv2.imshow("Output", img)
         cv2.waitKey(1)
