@@ -14,6 +14,7 @@ classNames = []
 with open(classFile, "rt") as f:
     classNames = f.read().rstrip("\n").split("\n")
 
+
 net = cv2.dnn_DetectionModel(weightsPath, configPath)
 net.setInputSize(320, 320)
 net.setInputScale(1.0 / 127.5)
